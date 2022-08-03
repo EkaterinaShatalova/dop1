@@ -1,24 +1,48 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {useEffect, useState} from 'react';
 import './App.css';
+import {Button} from "./components/Button";
+
+
+type getType = {
+  "userId": number,
+  "id": number,
+  "title": string,
+  body: string
+}
 
 function App() {
+  const [get, setGet] = useState<Array<getType>>([])
+  console.log(get)
+  const getRequestHandler = () => {
+    fetch('https://jsonplaceholder.typicode.com/todos')
+      .then(response => response.json())
+      .then(json => setGet(json))
+  }
+
+  const clean = () => {
+    setGet([])
+  }
+
+useEffect(() => {fetch('https://jsonplaceholder.typicode.com/todos')
+  .then(response => response.json())
+  .then(json => setGet(json))}, [])
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+
+      <Button callback={clean} nickName={'GetRequest'}/>
+      <p></p>
+      <ul>
+        {get.map((el: getType) => {
+          return (
+            <li>
+              <span>{el.id}- </span>
+              <span>{el.userId}-</span>
+              <span>{el.title}</span>
+            </li>
+          )
+        })}
+      </ul>
     </div>
   );
 }
